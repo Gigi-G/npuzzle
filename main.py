@@ -3,6 +3,7 @@
 # date: 2023-01-18
 # tags: python, puzzle, puzzle_state, puzzle_solver
 
+import argparse
 from puzzle.puzzle_solver import PuzzleSolver
 import sys
 import numpy as np
@@ -32,6 +33,9 @@ class PuzzleWidget(QWidget):
     # the experiment file
     experiment_files = []
     
+    # tiles dimension
+    size = 100
+    
     
     def __init__(self, *args, **kwargs):
         # call the QWidget constructor
@@ -40,14 +44,16 @@ class PuzzleWidget(QWidget):
         # create the buttons grid layout
         self.grid_layout = QGridLayout(self)
         
-        # check if the puzzle size is given as a command line argument
-        if int(sys.argv[1]) >= 3: 
-            self.puzzle_size = int(sys.argv[1])
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--ps", type=int, help="Size of the puzzle (e.g. 3 for a 3x3 puzzle)", default=3)
+        parser.add_argument("--ts", type=int, help="Size of the tiles (e.g. 50 for 50x50 pixels)", default=50)
+        args = parser.parse_args()
+        
+        self.puzzle_size = int(args.ps)
+        self.size = int(args.ts)
             
-        # create the solution
         self.create_solution()
         
-        # create the buttons
         self.create_tiles()
         
         self.create_solve_button()
@@ -85,7 +91,7 @@ class PuzzleWidget(QWidget):
             button_row = []
             for col in range(self.puzzle_size):
                 button = QPushButton(self)
-                button.setFixedSize(100, 100)
+                button.setFixedSize(self.size, self.size)
                 self.grid_layout.addWidget(button, row, col)
                 button_row.append(button)
             self.buttons.append(button_row)
@@ -94,7 +100,7 @@ class PuzzleWidget(QWidget):
 
     def create_solve_button(self):
         button = QPushButton(self)
-        button.setFixedSize(100, 100)
+        button.setFixedSize(self.size, self.size)
         button.setText('SOLVE')
         button.clicked.connect(self.solve)
         self.grid_layout.addWidget(button, self.puzzle_size, 0)
@@ -103,8 +109,8 @@ class PuzzleWidget(QWidget):
     
     def create_random_button(self):
         button = QPushButton(self)
-        button.setFixedSize(100, 100)
-        button.setText('RANDOM')
+        button.setFixedSize(self.size, self.size)
+        button.setText('RND')
         button.clicked.connect(self.create_random_puzzle)
         self.grid_layout.addWidget(button, self.puzzle_size + 1, 0)
         
@@ -123,7 +129,7 @@ class PuzzleWidget(QWidget):
 
     def create_text_box(self):
         self.textbox = QLineEdit()
-        self.textbox.setFixedSize(100, 100)
+        self.textbox.setFixedSize(self.size, self.size)
         self.textbox.setText('1')
         self.textbox.textChanged.connect(self.textbox_changed)
         self.grid_layout.addWidget(self.textbox, self.puzzle_size + 1, 1)
@@ -143,7 +149,7 @@ class PuzzleWidget(QWidget):
 
     def create_reset_button(self):
         button = QPushButton(self)
-        button.setFixedSize(100, 100)
+        button.setFixedSize(self.size, self.size)
         button.setText('RESET')
         button.clicked.connect(self.reset_puzzle)
         self.grid_layout.addWidget(button, self.puzzle_size + 2, 0)
@@ -160,7 +166,7 @@ class PuzzleWidget(QWidget):
         self.algorithm_combo_box.addItems(['BFS', 'DFS', 'A*', 'IDA*'])
         self.algorithm_combo_box.currentIndexChanged.connect(self.algorithm_changed)
         self.algorithm_combo_box.setCurrentIndex(0)
-        self.algorithm_combo_box.setFixedSize(100, 100)
+        self.algorithm_combo_box.setFixedSize(self.size, self.size)
         self.grid_layout.addWidget(self.algorithm_combo_box, self.puzzle_size, 1)
 
 
@@ -206,7 +212,7 @@ class PuzzleWidget(QWidget):
         self.experiments_combo_box.addItems(self.experiment_files)
         self.experiments_combo_box.currentIndexChanged.connect(self.experiment_changed)
         self.experiments_combo_box.setCurrentIndex(0)
-        self.experiments_combo_box.setFixedSize(100, 100)
+        self.experiments_combo_box.setFixedSize(self.size, self.size)
         self.grid_layout.addWidget(self.experiments_combo_box, self.puzzle_size + 2, 1)
 
 
