@@ -3,12 +3,22 @@
 # date: 2023-01-18
 # tags: python, puzzle, puzzle_state, puzzle_solver
 
+import logging
+import time
 import argparse
 from puzzle.puzzle_solver import PuzzleSolver
 import sys
 import numpy as np
 import glob as glob
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QComboBox, QLineEdit
+
+
+logging.basicConfig(filename=f"run_{time.time()}.log",
+                    filemode='w',
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    level=logging.DEBUG)
+
 
 class PuzzleWidget(QWidget):
     
@@ -60,7 +70,7 @@ class PuzzleWidget(QWidget):
         
         self.create_random_button()
         
-        self.create_text_box()
+        self.create_text_box_random_walks()
         
         self.create_reset_button()
         
@@ -105,8 +115,8 @@ class PuzzleWidget(QWidget):
         button.clicked.connect(self.solve)
         self.grid_layout.addWidget(button, self.puzzle_size, 0)
         
-    
-    
+        
+        
     def create_random_button(self):
         button = QPushButton(self)
         button.setFixedSize(self.size, self.size)
@@ -127,22 +137,22 @@ class PuzzleWidget(QWidget):
 
 
 
-    def create_text_box(self):
-        self.textbox = QLineEdit()
-        self.textbox.setFixedSize(self.size, self.size)
-        self.textbox.setText('1')
-        self.textbox.textChanged.connect(self.textbox_changed)
-        self.grid_layout.addWidget(self.textbox, self.puzzle_size + 1, 1)
+    def create_text_box_random_walks(self):
+        self.textbox_rd = QLineEdit()
+        self.textbox_rd.setFixedSize(self.size, self.size)
+        self.textbox_rd.setText('1')
+        self.textbox_rd.textChanged.connect(self.textbox_changed_random_walks)
+        self.grid_layout.addWidget(self.textbox_rd, self.puzzle_size + 1, 1)
         
         
         
-    def textbox_changed(self, text):
+    def textbox_changed_random_walks(self, text):
         if text.isdigit():
             if int(text) > 0:
                 self.random_walks = int(text)
             else:
                 self.random_walks = 1
-                self.textbox.setText('1')
+                self.textbox_rd.setText('1')
             print("Number of random walks: " + str(self.random_walks))
 
 
@@ -163,7 +173,7 @@ class PuzzleWidget(QWidget):
     
     def create_algorithm_combo_box(self):
         self.algorithm_combo_box = QComboBox(self)
-        self.algorithm_combo_box.addItems(['BFS', 'DFS', 'A*', 'IDA*'])
+        self.algorithm_combo_box.addItems(['BFS', 'DFS', 'A*', 'IDA*', 'BA*'])
         self.algorithm_combo_box.currentIndexChanged.connect(self.algorithm_changed)
         self.algorithm_combo_box.setCurrentIndex(0)
         self.algorithm_combo_box.setFixedSize(self.size, self.size)
@@ -174,7 +184,7 @@ class PuzzleWidget(QWidget):
     def algorithm_changed(self):
         self.chosen_algorithm = self.algorithm_combo_box.currentText()
         print(f"Selected {self.chosen_algorithm} algorithm.")
-        if(self.chosen_algorithm == 'A*' or self.chosen_algorithm == 'IDA*'):
+        if(self.chosen_algorithm == 'A*' or self.chosen_algorithm == 'IDA*' or self.chosen_algorithm == 'BA*'):
             value = input(
                 "Please choose a heuristic fucntion:"    +
                 "\n[1] Manhattan Distance"               +
