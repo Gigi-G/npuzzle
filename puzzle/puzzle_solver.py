@@ -8,6 +8,7 @@ from utils.BFS import BFS
 from utils.DFS import DFS
 from utils.A_STAR import A_STAR
 from utils.IDA_STAR import IDA_STAR
+from utils.BA_STAR import BA_STAR
 from puzzle.puzzle_state import PuzzleState
 import math
 import time
@@ -36,7 +37,7 @@ class PuzzleSolver(object):
 
         # Assign the heuristic algorithm that will be used in the solver.
         self.assign_heuristic(heuristic, algorithm)
-
+        
         # Create a Puzzle State Object with the inputs for Solver.
         initial_state = tuple(map(int, initial_state))
         size = int(math.sqrt(len(initial_state)))
@@ -59,6 +60,8 @@ class PuzzleSolver(object):
             self.search_alg = A_STAR
         elif(algorithm == 'IDA*'):
             self.search_alg = IDA_STAR
+        elif(algorithm == 'BA*'):
+            self.search_alg = BA_STAR
         else:
             raise NotImplementedError("No such algorithm is supported.")
 
@@ -76,7 +79,7 @@ class PuzzleSolver(object):
                 NotImplementedError: if the heuristic is not supported.
                 AttributeError: if the heuristic is not provided in case of using A* Search.
         """
-        if(heuristic == None and (algorithm == 'A*' or algorithm == 'IDA*')):
+        if(heuristic == None and (algorithm == 'A*' or algorithm == 'IDA*' or algorithm == 'BA*')):
             raise AttributeError("Required Attribute `heuristic` in case of useing A* Search.")
         
         elif(heuristic == 'manhattan_distance'):
@@ -94,7 +97,7 @@ class PuzzleSolver(object):
         elif(heuristic == 'linear_manhattan_conflict'):
             self.dist_metric = linear_manhattan_conflict
             
-        elif(heuristic == None and algorithm != 'A*' and algorithm != 'IDA*'):
+        elif(heuristic == None and algorithm != 'A*' and algorithm != 'IDA*' and algorithm != 'BA*'):
             pass
         
         else:
@@ -118,7 +121,6 @@ class PuzzleSolver(object):
                 goal_row = goal_idx // state.n
                 goal_col = goal_idx % state.n
                 sum_heuristic += self.dist_metric(current_row,current_col,goal_row,goal_col)
-            
         else:
             sum_heuristic = self.dist_metric(state)
         return sum_heuristic + state.cost
@@ -149,8 +151,9 @@ class PuzzleSolver(object):
                 parent_to_goal.append(parent_state)
                 path_to_goal.append(parent_state.action)
             parent_state = parent_state.parent
-        path_to_goal.reverse()
-        parent_to_goal.reverse()
+        if path_to_goal[0] != final_state.goal:
+            path_to_goal.reverse()
+            parent_to_goal.reverse()
         search_depth = len(path_to_goal)
 
         # Write the path of the state puzzle.
@@ -205,6 +208,9 @@ class PuzzleSolver(object):
             results = A_STAR(self.puzzle_state, self.calculate_total_cost)
         elif(self.search_alg == IDA_STAR):
             results = IDA_STAR(self.puzzle_state, self.calculate_total_cost)
+        elif(self.search_alg == BA_STAR):
+            goal_state = PuzzleState(tuple(map(int, self.puzzle_state.goal)), self.puzzle_state.n, self.puzzle_state.config, self.calculate_total_cost)
+            results = BA_STAR(self.puzzle_state, goal_state, self.calculate_total_cost)
         else: 
             results = self.search_alg(self.puzzle_state)
         
