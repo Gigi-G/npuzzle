@@ -3,7 +3,9 @@
 # date: 2023-01-18
 # tags: python, DFS, search, algorithm
 
+import logging
 import queue
+from tqdm import tqdm
 
 def DFS(initial_state):
     """DFS search"""
@@ -15,10 +17,14 @@ def DFS(initial_state):
     nodes_expanded = 0
     max_search_depth = 0
 
-    while not frontier.empty():
+    def generator():
+        while not frontier.empty():
+            yield
+
+    for _ in tqdm(generator()):
         state = frontier.get()
-        print("****** State ******")
-        state.display()
+        logging.info("****** State ******")
+        state.display_log()
         explored.add(state.config)
         if state.is_goal():
             return (state,nodes_expanded,max_search_depth)

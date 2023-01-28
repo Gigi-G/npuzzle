@@ -3,6 +3,7 @@
 # date: 2023-01-18
 # tags: python, puzzle, puzzle_state, puzzle_solver
 
+import os
 import logging
 import time
 import argparse
@@ -13,11 +14,17 @@ import glob as glob
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QComboBox, QLineEdit
 
 
-logging.basicConfig(filename=f"run_{time.time()}.log",
-                    filemode='w',
-                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
-                    datefmt='%H:%M:%S',
-                    level=logging.DEBUG)
+def create_logger():
+    """ It creates the logger. """
+    
+    # check if logs sirectory exists otherwise create it
+    if(not os.path.exists("./logs")):
+        os.mkdir("./logs")
+        
+    logging.basicConfig(filename=f"./logs/run_{time.time()}.log",
+                        filemode='w',
+                        format='%(levelname)s %(message)s',
+                        level=logging.DEBUG)
 
 
 class PuzzleWidget(QWidget):
@@ -285,6 +292,7 @@ class PuzzleWidget(QWidget):
         start_state = [item for sublist in start_state for item in sublist]
         sol = [item for sublist in self.solution for item in sublist]
         
+        print("Solver has started...")
         solver = PuzzleSolver(start_state, sol, self.chosen_algorithm, heuristic=self.chosen_heuristic)
         path = solver.solve()
         
@@ -294,10 +302,12 @@ class PuzzleWidget(QWidget):
                 self.set_puzzle(puzzle)
                 QApplication.processEvents()
                 QApplication.instance().thread().msleep(500)    
+        print("Solver has finished.")
 
 
 
 if __name__ == '__main__':
+    create_logger()
     app = QApplication(sys.argv)
     widget = PuzzleWidget()
     widget.show()

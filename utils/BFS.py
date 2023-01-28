@@ -3,7 +3,9 @@
 # date: 2023-01-18
 # tags: python, BFS, search, algorithm
 
+import logging
 import queue
+from tqdm import tqdm
 
 def BFS(initial_state):
     frontier = queue.Queue() 
@@ -13,11 +15,15 @@ def BFS(initial_state):
     explored = set()
     nodes_expanded = 0
     max_search_depth = 0
+    
+    def generator():
+        while not frontier.empty():
+            yield
 
-    while not frontier.empty():
+    for _ in tqdm(generator()):
         state = frontier.get()
-        print("****** State ******")
-        state.display()
+        logging.info("****** State ******")
+        state.display_log()
         explored.add(state.config)
         if state.is_goal():
             return (state,nodes_expanded,max_search_depth)

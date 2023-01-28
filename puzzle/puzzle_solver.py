@@ -13,6 +13,7 @@ from puzzle.puzzle_state import PuzzleState
 import math
 import time
 import resource
+import logging
 
 class PuzzleSolver(object):
 
@@ -157,14 +158,12 @@ class PuzzleSolver(object):
         search_depth = len(path_to_goal)
 
         # Write the path of the state puzzle.
-        print("\n\n\n")
-        print("-"*50)
-        print("******* Results *******")
+        logging.info(f"\n\n\n{'-'*50}\n******* Results *******")
         
         path = []
         for state in parent_to_goal:
-            print("Action: " + str(state.action))
-            state.display()
+            logging.info("Action: " + str(state.action))
+            state.display_log()
             config = state.config
             matrix = []
             n = int(math.sqrt(len(config)))
@@ -175,7 +174,7 @@ class PuzzleSolver(object):
                     line.append(config[offset + j])
                 matrix.append(line)
             path.append(matrix)
-        print("-"*50)
+        logging.info("-"*50)
             
         # Write all the results.
         print("path_to_goal: " + str(path_to_goal) + "\n")

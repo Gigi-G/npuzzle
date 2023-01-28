@@ -3,6 +3,8 @@
 # date: 2023-01-24
 # tags: python, BA*, search, algorithm
 
+import logging
+from tqdm import tqdm
 from utils.priority_queue import PriorityQueue
 
 def BA_STAR(initial_state, goal_state, heuristic):
@@ -21,25 +23,33 @@ def BA_STAR(initial_state, goal_state, heuristic):
     nodes_expanded_from_goal = 0
     max_search_depth_from_start = 0
     max_search_depth_from_goal = 0
+    log = ""
+    
+    def generator():
+        while start_frontier and goal_frontier:
+            yield
 
-    while start_frontier and goal_frontier:
+    for _ in tqdm(generator()):
         start_state = start_frontier.pop()
         goal_state = goal_frontier.pop()
-        print("****** Start State ******")
-        start_state.display()
-        print("****** Goal State ******")
-        goal_state.display()
+        log += "****** Start State ******\n"
+        log = start_state.display(log)
+        log += "****** Goal State ******\n"
+        log = goal_state.display(log)
         explored.add(start_state)
         explored.add(goal_state)
         if start_state.is_goal():
+            logging.info(log)
             return (start_state, nodes_expanded_from_start, max_search_depth_from_start)
         if goal_state.is_goal():
+            logging.info(log)
             return (goal_state, nodes_expanded_from_goal, max_search_depth_from_goal)
         
         result = start_frontier_direction(start_state, heuristic, start_frontier, goal_frontier, start_frontier_config, goal_frontier_config, explored, nodes_expanded_from_start + 1, max_search_depth_from_goal)
         
         if result[0]:
             max_search_depth = max_search_depth_from_start if max_search_depth_from_start > max_search_depth_from_goal else max_search_depth_from_goal
+            logging.info(log)
             return (result[1], result[2], max_search_depth)
         
         nodes_expanded_from_start, max_search_depth_from_start = result[1], result[2]
@@ -48,10 +58,12 @@ def BA_STAR(initial_state, goal_state, heuristic):
         
         if result[0]:
             max_search_depth = max_search_depth_from_start if max_search_depth_from_start > max_search_depth_from_goal else max_search_depth_from_goal
+            logging.info(log)
             return (result[1], result[2], max_search_depth)
         
         nodes_expanded_from_goal, max_search_depth_from_goal = result[1], result[2]
         
+    logging.info(log)
     return None
 
 

@@ -7,6 +7,7 @@ import time
 import resource
 import sys
 import math
+import logging
 
 class PuzzleState(object):
 
@@ -58,14 +59,26 @@ class PuzzleState(object):
 
 
 
-    def display(self):
+    def display_log(self):
         """ It displays the current state of the puzzle. """
         for i in range(self.n):
             line = []
             offset = i * self.n
             for j in range(self.n):
                 line.append(self.config[offset + j])
-            print(line)
+            logging.info(line)
+    
+    
+    
+    def display(self, log):
+        """ It displays the current state of the puzzle. """
+        for i in range(self.n):
+            line = []
+            offset = i * self.n
+            for j in range(self.n):
+                line.append(self.config[offset + j])
+            log += line.__str__() + "\n"
+        return log
 
 
 

@@ -3,36 +3,53 @@
 # date: 2023-01-18
 # tags: python, IDA*, search, algorithm
 
+import logging
+from tqdm import tqdm
+
 explored = set()
+log = ""
 
 def IDA_STAR(initial_state,heuristic):
     """IDA* search"""
     
+    global log
+    global explored
+    
     threshold = heuristic(initial_state)
     
-    while True:
+    def generator():
+        while True:
+            yield
+    
+    for _ in tqdm(generator()):
         explored.clear()
         result = search(initial_state, heuristic, initial_state.cost, threshold)
         if result[0] == "cutoff":
             threshold = result[1]
         elif result == "failure":
+            logging.info(log)
             return None
         else:
+            logging.info(log)
             return (result[1], result[2], result[3])
     
 
 def search(state, heuristic, g, threshold, nodes_expanded = 0, max_search_depth = 0):
-    print(f"****** State with threshold = {threshold}******")
-    state.display()
+    global log
+    global explored
+    
+    log += f"****** State with threshold = {threshold}******\n"
+    log = state.display(log)
     
     if state.is_goal():
+        logging.info(log)
         return ("found", state, nodes_expanded, max_search_depth)
         
     estimated_cost = g + heuristic(state)
     
     if estimated_cost > threshold:
-        print(f"Estimated cost = {estimated_cost} > threshold = {threshold}")
-        print("/"*50)
+        log += f"Estimated cost = {estimated_cost} > threshold = {threshold}\n"
+        log += ("/"*50) + "\n"
         return ("cutoff", estimated_cost)
     
     min = float("inf")

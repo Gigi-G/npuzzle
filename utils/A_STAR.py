@@ -3,6 +3,8 @@
 # date: 2023-01-18
 # tags: python, A*, search, algorithm
 
+import logging
+from tqdm import tqdm
 from utils.priority_queue import PriorityQueue
 
 def A_STAR(initial_state,heuristic):
@@ -14,15 +16,21 @@ def A_STAR(initial_state,heuristic):
     explored = set()
     nodes_expanded = 0
     max_search_depth = 0
+    log = ""
 
-    while frontier:
+    def generator():
+        while frontier:
+            yield
+
+    for _ in tqdm(generator()):
         state = frontier.pop()
-        print("****** State ******")
-        state.display()
+        log += "****** State ******\n"
+        log = state.display(log)
         explored.add(state)
         if state.is_goal():
-            return (state,nodes_expanded,max_search_depth)
-        
+            logging.info(log)
+            return (state, nodes_expanded, max_search_depth)
+
         nodes_expanded += 1
         for neigbhor in state.expand(RLDU= False):
             if neigbhor not in explored and tuple(neigbhor.config) not in frontier_config:
@@ -34,4 +42,6 @@ def A_STAR(initial_state,heuristic):
                 if heuristic(neigbhor) < frontier[neigbhor]:
                     frontier.__delitem__(neigbhor)
                     frontier.append(neigbhor)
+    
+    logging.info(log)
     return None
