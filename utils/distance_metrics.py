@@ -44,14 +44,14 @@ def linear_conflict_single(state):
         goal_row = goal[i*n:(i+1)*n]
         for j in range(n):
             if row[j] in goal_row[j+1:]:
-                linear_conflicts += (n - 1)
+                linear_conflicts += 2
     # Linear Conflict in columns
     for i in range(n):
         col = config[i::n]
         goal_col = goal[i::n]
         for j in range(n):
             if col[j] in goal_col[j+1:]:
-                linear_conflicts += (n - 1)
+                linear_conflicts += 2
     return linear_conflicts
 
 
