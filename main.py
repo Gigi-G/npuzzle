@@ -38,6 +38,9 @@ class PuzzleWidget(QWidget):
     # the number of random walks
     random_walks = 1
     
+    # number of walks
+    number_of_walks = 0
+    
     # the puzzle size
     puzzle_size = 3
     
@@ -139,8 +142,10 @@ class PuzzleWidget(QWidget):
             row = np.random.randint(0, self.puzzle_size)
             col = np.random.randint(0, self.puzzle_size)
             if abs(row - empty_row) + abs(col - empty_col) == 1:
+                self.number_of_walks += 1
                 self.buttons[empty_row][empty_col].setText(self.buttons[row][col].text())
                 self.buttons[row][col].setText('')
+        print("Number of walks: " + str(self.number_of_walks))
 
 
 
@@ -174,6 +179,7 @@ class PuzzleWidget(QWidget):
     
     
     def reset_puzzle(self):
+        self.number_of_walks = 0
         self.set_puzzle(self.solution)
     
     
@@ -246,12 +252,25 @@ class PuzzleWidget(QWidget):
             data = file.read()
         data = data.split('\n')
         matrix = []
-        for line in data:
+        # if the file has only one line
+        if len(data) == 1:
+            data = data[0].split()
             row = []
-            values = line.split()
-            for v in values:
-                row.append(int(v))
+            while len(data) > 0:
+                row.append(int(data[0]))
+                data = data[1:]
+                if len(data) % self.puzzle_size == 0:
+                    matrix.append(row)
+                    row = []
             matrix.append(row)
+        # if the file has more than one line
+        else:       
+            for line in data:
+                row = []
+                values = line.split()
+                for v in values:
+                    row.append(int(v))
+                matrix.append(row)
         return matrix
 
 
@@ -272,8 +291,10 @@ class PuzzleWidget(QWidget):
         
         # if the clicked tile is adjacent to the empty tile, swap them
         if abs(row - empty_row) + abs(col - empty_col) == 1:
+            self.number_of_walks += 1
             self.buttons[empty_row][empty_col].setText(self.buttons[row][col].text())
             self.buttons[row][col].setText('')
+        print(f"Number of walks: {self.number_of_walks}")
 
 
 
@@ -301,7 +322,8 @@ class PuzzleWidget(QWidget):
             for puzzle in path:
                 self.set_puzzle(puzzle)
                 QApplication.processEvents()
-                QApplication.instance().thread().msleep(500)    
+                QApplication.instance().thread().msleep(500)
+        self.number_of_walks = 0
         print("Solver has finished.")
 
 
