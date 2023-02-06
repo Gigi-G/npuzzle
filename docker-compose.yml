@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+
+  #-------------------------------#
+  #           N-Puzzle            #
+  #-------------------------------#
+
+  simulator: 
+    container_name: N-Puzzle
+    environment:
+      - DEBIAN_FRONTEND=noninteractive
+      - DISPLAY=$DISPLAY
+      - QT_QPA_PLATFORM=xcb 
+    image: ubuntu:22.04
+    working_dir: /usr/src/npuzzle
+    command:  "bash -c 'apt-get update && apt-get upgrade -y && \
+              apt install -y g++ python3 python3-pip python3-numpy python3-scipy python3-matplotlib python3-pyqt5 libglu1-mesa-dev freeglut3-dev mesa-common-dev && \
+              pip3 install -r requirements.txt && tail -f /dev/null'"
+    volumes:
+        - $PWD/:/usr/src/npuzzle/
+        - /tmp/.X11-unix:/tmp/.X11-unix
