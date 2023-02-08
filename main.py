@@ -253,7 +253,7 @@ class PuzzleWidget(QWidget):
         data = data.split('\n')
         matrix = []
         # if the file has only one line
-        if len(data) == 1:
+        if len(data)  < self.puzzle_size:
             data = data[0].split()
             row = []
             while len(data) > 0:
