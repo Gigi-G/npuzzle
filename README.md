@@ -17,7 +17,7 @@
 - **[Introduction](#Introduction)**
   
 - **[Algorithms](#Algorithms)**
-  
+
 - **[Heuristics](#Heuristics)**
 - **[Usage](#Usage)**
   - **[Unix](#Unix)**
@@ -50,7 +50,6 @@ Two uninformed search algorithms and three informed search algorithms have been 
 
 - BFS - breadth-first search;
 - DFS - depth-first search;
-
 - A* search;
 - IDA* search - iterative deeping A* search;
 - BA* search - bidirectional A* search.
@@ -111,10 +110,10 @@ Download and install <a target="_blank" href="https://sourceforge.net/projects/v
 Now follow these steps:
 
 <p align="center">
-    <img src="assets/002.png" style="zoom: 50%;"><br>
-    <img src="assets/003.png" style="zoom: 50%;" ><br>
-	<img src="assets/004.png" style="zoom:50%;" ><br>
-	<img src="assets/005.png" style="zoom:50%;" >
+    <img src="./assets/002.png" style="width: 50%; height: auto"><br>
+    <img src="./assets/003.png" style="width: 50%; height: auto" ><br>
+    <img src="./assets/004.png" style="width: 50%; height: auto" ><br>
+    <img src="./assets/005.png" style="width: 50%; height: auto" >
 </p>
 
 
@@ -128,7 +127,7 @@ cat /etc/resolv.conf
 Take note of the nameserver.
 
 <p align="center">
-	<img src="assets/006.png" style="zoom: 90%;" >
+	<img src="./assets/006.png" style="width: 100%; height: auto" >
 </p>
 
 After that, you have to use these command:
