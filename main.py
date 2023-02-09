@@ -223,14 +223,7 @@ class PuzzleWidget(QWidget):
 
     def create_experiments_combo_box(self):
         self.experiments_combo_box = QComboBox(self)
-        if self.puzzle_size == 3:
-            self.experiment_folder = "experiments/3x3*"
-        elif self.puzzle_size == 4:
-            self.experiment_folder = "experiments/4x4*"
-        elif self.puzzle_size == 5:
-            self.experiment_folder = "experiments/5x5*"
-        else:
-            self.experiment_folder = ""
+        self.experiment_folder = f"experiments/{self.puzzle_size}x{self.puzzle_size}*"
         self.experiment_files = glob.glob(self.experiment_folder + "*.txt")
         self.experiments_combo_box.addItems(self.experiment_files)
         self.experiments_combo_box.currentIndexChanged.connect(self.experiment_changed)
@@ -294,7 +287,7 @@ class PuzzleWidget(QWidget):
             self.number_of_walks += 1
             self.buttons[empty_row][empty_col].setText(self.buttons[row][col].text())
             self.buttons[row][col].setText('')
-        print(f"Number of walks: {self.number_of_walks}")
+            print(f"Number of walks: {self.number_of_walks}")
 
 
 
