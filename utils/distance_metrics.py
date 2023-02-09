@@ -19,13 +19,13 @@ def manhattan_distance(point1_x, point1_y, point2_x, point2_y):
 
 def eculidean_distance(point1_x, point1_y, point2_x, point2_y):
     """ 
-        It is the square root of the sum of the squares of the differences in the point 1's x and y 
+        It is the square root of the sum of the squares of the differences in the point 1's x and y coordinates and the point 2's x and y coordinates respectively
             @param point1_x: x coordinate of point 1
             @param point1_y: y coordinate of point 1
             @param point2_x: x coordinate of point 2
             @param point2_y: y coordinate of point 2
     """
-    return math.sqrt(math.pow(point1_x - point2_x,2) + math.pow(point1_y - point2_y,2))
+    return int(math.sqrt(math.pow(point1_x - point2_x,2) + math.pow(point1_y - point2_y,2)) + 0.5)
 
 
 
