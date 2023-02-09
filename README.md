@@ -194,7 +194,7 @@ docker-compose up -d
 sudo chmod +x docker_run.sh
 ```
 
-Then you can try some scripts inside **./tests**:
+Then you can try:
 
 ```bash
 ./docker_run.sh python3 main.py --help
